@@ -60,18 +60,20 @@ export const createProduct = async (req: Request, res: Response): Promise<void |
 
 // Update a product
 export const updateProduct = async (req: Request, res: Response): Promise<void | any> => {
-  const { error, value } = productValidation.validate(req.body, { abortEarly: false });
-
-  if (error) {
-    return res.status(400).json({message: "Validation failed",details: error.details.map((d) => d.message)});
-  }
-
   try {
     const { id } = req.params;
+    if(!id) {
+      return res.status(400).json({ message: "Service ID is required" });
+    }
+
+    const { error, value } = productValidation.validate(req.body, { abortEarly: false });
+    if (error) {
+      return res.status(400).json({message: "Validation failed",details: error.details.map((d) => d.message)});
+    }
+
     const updatedData = _.pick(value, allowedFields);
-
+    
     const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, { new: true });
-
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -87,7 +89,7 @@ export const updateProduct = async (req: Request, res: Response): Promise<void |
 export const deleteProduct = async (req: Request, res: Response): Promise<void | any> => {
     try {
         const { id } = req.params;
-        const deletedProduct = await Product.findByIdAndDelete(id);
+        const deletedProduct = await Product.findByIdAndDelete(id, {new: true});
 
         if (!deletedProduct) {
             return res.status(404).json({ message: "Product not found" });

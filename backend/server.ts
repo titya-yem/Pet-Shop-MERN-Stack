@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import helmet from "helmet";
 import morgan from "morgan";
 import productRoutes from "./routes/product.route.js";
+import serviceRoutes from "./routes/service.route.js";
 
 const app = express();
 dotenv.config();
@@ -18,11 +19,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/products", productRoutes);
-
-app.use((req, res) => {
-  console.log(`Unmatched Route: ${req.method} ${req.url}`);
-  res.status(404).json({ message: "Route not found" });
-});
+app.use("/api/services", serviceRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5000;
