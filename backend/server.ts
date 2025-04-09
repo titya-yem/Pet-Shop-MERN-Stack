@@ -19,6 +19,11 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/products", productRoutes);
 
+app.use((req, res) => {
+  console.log(`Unmatched Route: ${req.method} ${req.url}`);
+  res.status(404).json({ message: "Route not found" });
+});
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
