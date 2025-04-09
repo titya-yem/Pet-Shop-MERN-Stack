@@ -1,12 +1,12 @@
 import Joi from "joi";
 
 const productValidation = Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string().min(5).max(255).required(),
     category: Joi.string().valid('cat', 'dog', 'bird', 'rabbit', 'goldfish').required(),
-    price: Joi.number().required(),
+    price: Joi.number().positive().required(),
     rating: Joi.number().required(),
-    reviews: Joi.number(),
-    description: Joi.string().required(),
+    reviews: Joi.number().positive(),
+    description: Joi.string().min(5).max(450).required(),
     image: Joi.string().required(),
 })
 

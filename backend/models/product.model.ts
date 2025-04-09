@@ -1,10 +1,10 @@
 import mongoose,{Document, Schema} from "mongoose";
 
-const categoryEnum = ['cat', 'dog', 'bird', 'rabbit', 'goldfish'];
+type CategoryType = 'cat' | 'dog' | 'bird' | 'rabbit' | 'goldfish';
 
 interface productTypes extends Document {
     name: string;
-    category: typeof categoryEnum;
+    category: CategoryType;
     price: number;
     rating: number;
     reviews?: number;
@@ -12,15 +12,24 @@ interface productTypes extends Document {
     image: string;
 }
 
-const productSchema: Schema = new Schema({
-    name: { type: String, required: true, trim: true },
-    category: { type: String, required: true, enum: categoryEnum},
-    price: { type: Number, required: true },
-    rating: { type: Number, required: true },
-    reviews: { type: Number },
-    description: { type: String, required: true , trim: true},
-    image: { type: String, required: true },
-});
+const productSchema = new Schema<productTypes>({
+    name: { type: String, required: true, trim: true, unique: true },
+    category: { type: String, required: true, enum: ['cat', 'dog', 'bird', 'rabbit', 'goldfish'] },
+    price: { type: Number, required: true, default: 0 },
+    rating: { type: Number, required: true, default: 0 },
+    reviews: { type: Number, default: 0 },
+    description: { type: String, required: true, trim: true},
+    image: { 
+        type: String, 
+        required: true,
+        validate: {
+          validator: (value: string) => {
+            return /^https?:\/\/.+\.(jpg|jpeg|png|gif)$/.test(value);
+          },
+          message: 'Invalid image URL. Please provide a valid URL.'
+        }
+      },
+}, { timestamps: true });
 
 const Product = mongoose.model<productTypes>("Product", productSchema);
 
