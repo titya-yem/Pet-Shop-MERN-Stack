@@ -26,6 +26,6 @@ const appointmentSchema = new mongoose.Schema<appointmentProps>({
     message: {type: String, required: true},
 }, { timestamps: true });
 
-const appointment = mongoose.model<appointmentProps>("Appointment", appointmentSchema);
+const Appointment = mongoose.model<appointmentProps>("Appointment", appointmentSchema);
 
-export default appointment;
+export default Appointment;

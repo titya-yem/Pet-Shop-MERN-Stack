@@ -5,7 +5,7 @@ import AppointmentValidation from "../validations/appointment.validation.js"
 // Get all appointments
 export const getAllAppointments = async (req: Request, res: Response): Promise <void | any> => {
     try {
-        const appointments = await Appointment.find().populate('user', 'name email').populate('service', 'title price');
+        const appointments = await Appointment.find().populate('user', 'userName email').populate('service', 'title price');
         if (!appointments) {
             return res.status(404).json({ message: 'No appointments found' });
         }

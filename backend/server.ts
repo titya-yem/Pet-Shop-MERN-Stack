@@ -8,6 +8,7 @@ import productRoutes from "./routes/product.route.js";
 import serviceRoutes from "./routes/service.route.js";
 import commentRoutes from "./routes/comment.route.js"
 import appointmentRoutes from "./routes/appointment.route.js"
+import userRoutes from "./routes/user.route.js"
 
 const app = express();
 dotenv.config();
@@ -24,6 +25,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/comments", commentRoutes)
 app.use("/api/appointment", appointmentRoutes)
+app.use("/api/user", userRoutes)
 
 // Start the server
 const PORT = process.env.PORT || 5000;
