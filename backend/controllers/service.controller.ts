@@ -1,6 +1,6 @@
-import Service from "@/models/service.model";
-import serviceValidation from "@/validations/service.validation";
 import { Request, Response } from "express";
+import Service from "@/models/service.model.js";
+import serviceValidation from "@/validations/service.validation.js";
 
 // Get all services
 export const getAllServices = async (req: Request, res: Response): Promise<void | any> => {
@@ -17,12 +17,12 @@ export const getAllServices = async (req: Request, res: Response): Promise<void 
     }
 }
 
-// Get a service by ID
+// Create a service by ID
 export const createService = async (req: Request, res: Response): Promise<void | any> => {
     try {
         const { error, value } = serviceValidation.validate(req.body, { abortEarly: false });
         if(error) {
-            return res.status(400).json({ message: "Validation failed", details: error.details.map((d) => d.message) });
+            return res.status(400).json({ message: "Validation failed", details: error.details[0].message});
         }
 
         const newService = new Service(value);
@@ -45,7 +45,7 @@ export const updateService = async (req: Request, res: Response): Promise<void |
 
         const { error, value } = serviceValidation.validate(req.body, { abortEarly: false });
         if(error) {
-            return res.status(400).json({ message: "Validation failed", details: error.details.map((d) => d.message) });
+            return res.status(400).json({ message: "Validation failed", details: error.details[0].message });
         }
 
         const updatedService = await Service.findByIdAndUpdate(id, value, { new: true });

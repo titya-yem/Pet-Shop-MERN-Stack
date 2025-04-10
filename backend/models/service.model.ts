@@ -14,7 +14,7 @@ interface serviceTypes extends Document {
     alt: { type: String, required: true, trim: true },
     price: { type: Schema.Types.Mixed, required: true, default: 0 },
     duration: { type: Schema.Types.Mixed },
-  });
+  }, { timestamps: true });
 
 const Service = model<serviceTypes>("Service", serviceSchema);
 

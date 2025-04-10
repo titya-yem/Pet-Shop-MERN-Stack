@@ -6,6 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import productRoutes from "./routes/product.route.js";
 import serviceRoutes from "./routes/service.route.js";
+import commentRoutes from "./routes/comment.route.js"
 
 const app = express();
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/services", serviceRoutes);
+app.use("/api/comments", commentRoutes)
 
 // Start the server
 const PORT = process.env.PORT || 5000;

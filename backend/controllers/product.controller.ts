@@ -40,13 +40,12 @@ export const getProductbyId = async (req: Request, res: Response): Promise<void 
 
 // Create a new product
 export const createProduct = async (req: Request, res: Response): Promise<void | any> => {
+  try {
   const { error, value } = productValidation.validate(req.body, { abortEarly: false });
-
   if (error) {
     return res.status(400).json({message: "Validation failed",details: error.details.map((d) => d.message),});
   }
 
-  try {
     const data = _.pick(value, allowedFields);
     const newProduct = new Product(data);
     await newProduct.save();
