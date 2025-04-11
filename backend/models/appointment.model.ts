@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 enum appointmentTypes {
     Vacation = "Vacation",
@@ -8,7 +8,7 @@ enum appointmentTypes {
     Party = "Party",
 }
 
-interface appointmentProps {
+interface appointmentProps extends Document{
     type: appointmentTypes;
     name: mongoose.Types.ObjectId;
     email: string;

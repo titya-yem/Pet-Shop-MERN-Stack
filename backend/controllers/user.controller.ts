@@ -51,7 +51,6 @@ export const createUser = async (req: Request, res: Response): Promise<void | an
 };
 
 // Update user
-// Update user details
 export const updateUser = async (req: Request, res: Response): Promise<void | any> => {
     try {
         const { id } = req.params;
@@ -62,14 +61,13 @@ export const updateUser = async (req: Request, res: Response): Promise<void | an
 
         if (!id) return res.status(400).json({ message: 'User ID is required' });
 
-        // Check if the logged-in user is trying to update their own account or another user's account
+        // Check if the logged-in user is trying to update their own account
         if (req.user?.id !== id && req.user?.role !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to update this user' });
         }
 
-        // If the logged-in user is a regular user (role: user)
+        // Only allow updating 'userName', 'email', or 'password' for regular users
         if (req.user?.role === 'user') {
-            // Only allow updating 'userName', 'email', or 'password' for regular users
             const allowedFields = ['userName', 'email', 'password'];
             const updates = _.pick(value, allowedFields);
 
@@ -100,7 +98,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void | an
             return res.status(200).json({ message: 'User updated successfully', user: updatedUser });
         }
 
-        // If the logged-in user is an admin (role: admin), they can update all fields
+        // If the logged-in user is an admins, they can update all fields
         if (req.user?.role === 'admin') {
             const updatedUser = await User.findByIdAndUpdate(id, value, { new: true });
             if (!updatedUser) return res.status(404).json({ message: 'User not found' });
