@@ -27,13 +27,13 @@ export const login = async (req: Request, res: Response): Promise<void | any> =>
 
     // Generate token
     const payload = _.pick(user, ['_id', 'email', 'role']);
-    const token = jwt.sign(payload, secret, { expiresIn: '1h' });
+    const token = jwt.sign(payload, secret, { expiresIn: '2h' });
 
     // Set cookie
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Set to true in production
-      maxAge: 3600000, // 1 hour
+      maxAge: 2 * 60 * 60 * 1000, // 2 hours
       sameSite: 'strict',
     });
 
@@ -45,3 +45,23 @@ export const login = async (req: Request, res: Response): Promise<void | any> =>
     });
   }
 };
+
+export const logout = async (req: Request, res: Response): Promise<void | any> => {
+  try {
+    
+    // Clear the cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      sameSite: 'lax',
+    })
+
+    res.status(200).json({ message: 'Logout successful' });
+  } 
+  catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+    message: process.env.NODE_ENV === 'development' ? error.message : 'Error logging out',
+    });
+  }
+}
