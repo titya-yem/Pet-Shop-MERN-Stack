@@ -33,7 +33,7 @@ export const createComment = async (req: Request, res: Response): Promise<void |
       const newComment = new Comment(data);
   
       await newComment.save();
-      await newComment.populate("user", "name email");
+      await newComment.populate("user", "userName email");
   
       res.status(201).json({message: "Comment created successfully",comment: newComment});
     } catch (error) {
