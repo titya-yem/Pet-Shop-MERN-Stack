@@ -4,7 +4,21 @@ import userValidation from '@/validations/user.validation.js';
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 
-// Get user by ID
+export const user = async (req: Request, res: Response): Promise<void | any> => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized: User not authenticated' });
+        }
+        const uniqueUser = await User.findById(req.user.id).select("-password -isActive -role");
+
+        res.status(200).send(uniqueUser)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("User not exisited")
+    }
+}
+
+// Get user by ID For admin only
 export const getUserById = async (req: Request, res: Response): Promise<void | any> => {
     try {
         const { id } = req.params;
@@ -32,23 +46,24 @@ export const createUser = async (req: Request, res: Response): Promise<void | an
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        // Hash the password before saving
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(value.password, salt);
-
-        const user = new User({ ...value, password: hashedPassword });
         const existingUser = await User.findOne({ email: value.email });
         if (existingUser) {
-            return res.status(409).json({ message: 'User already exists' });
+            return res.status(409).json({ message: 'Email already in use' });
         }
 
-        await user.save();
-        return res.status(201).json({ message: 'User created successfully', user });
+        const hashedPassword = await bcrypt.hash(value.password, 10);
+        const newUser = new User({...value, password: hashedPassword});
+
+        await newUser.save();
+        const userResponse = _.omit(newUser.toObject(), ["password", "__v", "role"]);
+
+        res.status(201).json(userResponse);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Failed to create user' });
     }
 };
+
 
 // Update user
 export const updateUser = async (req: Request, res: Response): Promise<void | any> => {

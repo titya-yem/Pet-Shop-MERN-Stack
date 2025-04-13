@@ -41,19 +41,25 @@ export const getProductbyId = async (req: Request, res: Response): Promise<void 
 // Create a new product
 export const createProduct = async (req: Request, res: Response): Promise<void | any> => {
   try {
-  const { error, value } = productValidation.validate(req.body, { abortEarly: false });
-  if (error) {
-    return res.status(400).json({message: "Validation failed",details: error.details.map((d) => d.message),});
-  }
+    const token = req.header("token");
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-    const data = _.pick(value, allowedFields);
-    const newProduct = new Product(data);
+    const { error, value } = productValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const filteredData = _.pick(value, allowedFields);
+
+    const newProduct = new Product(filteredData);
     await newProduct.save();
 
     res.status(201).json({ message: "Product created successfully", product: newProduct });
   } catch (error) {
     console.error("Error creating product:", error);
-    res.status(500).json({ message: "Failed to create product" });
+    res.status(500).json({ message: "Error creating product" });
   }
 };
 

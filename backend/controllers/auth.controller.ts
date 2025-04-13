@@ -48,7 +48,6 @@ export const login = async (req: Request, res: Response): Promise<void | any> =>
 
 export const logout = async (req: Request, res: Response): Promise<void | any> => {
   try {
-    
     // Clear the cookie
     res.clearCookie('token', {
       httpOnly: true,
