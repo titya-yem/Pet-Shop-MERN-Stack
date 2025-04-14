@@ -14,3 +14,5 @@ const admin = (req: Request, res: Response, next: NextFunction) => {
         res.status(500).send("Server error")
     }
 }
+
+export default admin;

@@ -4,13 +4,14 @@ import { createService,
         getAllServices, 
         updateService 
 } from '../controllers/service.controller.js';
+import admin from '@/middlewares/admin.middleware.js';
 
 const router = Router();
 
 router.get("/", getAllServices)
-router.post("/", createService)
-router.put("/:id", updateService)
-router.delete("/:id", deleteService)
+router.post("/", admin, createService)
+router.put("/:id", admin, updateService)
+router.delete("/:id", admin, deleteService)
 
 export default router;
 
